@@ -2,90 +2,86 @@ require("dotenv").config();
 
 var keys = require("./keys.js");
 
+var fs = require("fs");
+
 var spotify = new Spotify(keys.spotify);
 
-var axios = require("axios")
+var axios = require("axios");
 
 var moment = require("moment");
 
 var Spotify = require("node-spotify-api");
 
-// input
-var query = process.argv;
-var type =process.argv[2];
-var array = [];
+var option = process.argv[2];
 
-//loop through 
-for (var i = 3; i < query.length; i++) {
-    array.push(query[i]);
-    array.push("+");
-}
+var query =process.argv[3];
 
-array.splice(-1);
-var finalSearch = array.join("");
-
-// Switch statement to call functions
-
-switch (command) {
-    case "concert-this":
-        concertThis();
+switch (option) {
+    case "movie-this":
+        movieThis(query);
         break;
 
     case "spotify-this-song":
-        spotifyThisSong();
+        spotifyCall(query);
         break;
         
-    case "movie-this":
-        movieThis();
+    case "concert-this":
+        concertThis(query);
+        break;
+        
+    case "do-what-it-says":
+        doWhatItSays()
         break;
 
-    case "do-what-it-says":
-        doWhatItSays();
-        break;
 
 }
 
+function spotifyCall(songName) {
+    spotify.search ({type:"track", query: songName}, function(err,data) {
+      if (err){
+          return console.log("error occurred" + err);
+      } 
+      else (process.argv[3] === undefined); {
+        songName = "the sign ace of base";
+      }
+      console.log("\n_Track Info_" + "\nArtist: " + data.tracks.items[0].artists[0].name + "\nSong: " + data.tracks.items[0].name + "\nLink: " + data.tracks.items[0].external_urls.spotify + "\nAlbum: " + data.tracks.items[0].album.name + "\n" + "\nGreat song! Search another :)") 
+    },
 
-
-
-// variables to call functions
-var spotifyThisSong = function() {
-    if (finaSearch === ""){
-        console.log ("\n");
-        console.log("No Artist entered");
-        console.log("\n");
-
+function moveThis(moveName) {
+    if (!movieName){
+        movieName = "Mr Nobody";
     }
-    else {
-        axios.get("https://rest.bandsintown.com/artists/" + finalSearch + "/events?app_id=codingbootcamp").then(
-            function (response){
-             if (response.data.length <= 0){
-                 console.log("no info for this artist");
-             }  
-             else {
-                 
-                 }
-             } 
-                
-            
-        
+var queryURL = "http://www.omdbapi.com/?t=" +movieName + "&y=&plot=short&apikey=trilogy"; 
+axios.get(queryURL).then(
+    function(response){
+        if (!movieName){
+            moveName = "Mr Nobody";
+        }
+        console.log("\n_Movie Info_" + "\nTitle: " + response.data.Title + "\nRelease Year: " + response.data.Year + "\nRating: " + response.data.Rated + "\nRelease Country: " + response.data.Country + "\nLanguage: " + response.data.Language + "\nPlot: " + response.data.Plot + "\nActors: " + response.data.Actors + "\n" + "\n Love this one!");
+    }
+)   
+},
+
+function conertThis(artist){
+    var bandQueryUrl=  "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+    axios.get(bandQueryUrl).then(
+        function(response){
+            console.log("Upcomming Events");
+            console.log("Artist: " + artist + "\nVenue: " + response.data[0].venue.name + "\nLocation: " + response.data[0].venue.country + "\nDate: " + response.data[0].datatime );
+        }
+    )
+},
+
+function doWhatItSays() {
     
 
-            }
+    fs.readFile("random.txt", "utf8", function (error, data) {
+        if (error) {
+            return console.log(error);
+        }
+     
+        var dataArray = data.split(",");
+        var option = dataArray[0];
+        var randomSearch = dataArray[1];   
 
-var movieThis = function () {
-    console.log ("" + input);
-};
-
-var doWhatItSays = function(){
-    console.log ("" + input);
-
-};
-
-var concertThis = function() {
-    console.log ();
-};
-
-// Switch statement to call functions
-
-
+    })})}
